@@ -1,0 +1,73 @@
+ MySQL  SQL > \connect --mc root@localhost
+Creating a Classic session to 'root@localhost'
+Please provide the password for 'root@localhost': ***********
+Save password for 'root@localhost'? [Y]es/[N]o/Ne[v]er (default No): N
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 8
+Server version: 8.0.32 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  sakila  SQL > \use eva_3
+Default schema set to `eva_3`.
+Fetching global names, object names from `eva_3` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  eva_3  SQL > create table personas(
+                                      -> id int auto_increment key,
+                                      -> nombre varchar(50) not null,
+                                      -> apellido_pat varchar(50) not null,
+                                      -> apellido_mat varchar(50),
+                                      -> fecha_nac date,
+                                      -> clave_rfc varchar(13));
+Query OK, 0 rows affected (0.0191 sec)
+ MySQL  localhost:3306 ssl  eva_3  SQL > insert into personas(nombre, apellido_pat, apellido_mat, fecha_nac)
+                                      -> values('Erick','Pérez','Lozano','2001-05-24'), ('Jesús','Sierra','Ruíz','2002-03-30'), ('Marco','Polo','Moro','2000-12-01'), ('Daniela','Martínez','Zapata','2002-01-15'), ('Paolina','Gutierrez','López','2001-07-31'), ('Javier','Ramos','Hernández','2002-05-30'), ('Yolanda','Lozano','Aranda','2002-01-03'), ('Armando','Sosa','Loya','2000-03-09'), ('Dilan','García','Hernández','2000-05-20');
+Query OK, 9 rows affected (0.0125 sec)
+
+Records: 9  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  eva_3  SQL > insert into personas(nombre, apellido_pat, fecha_nac)
+                                      -> values('Dan','Luminal','2002-03-30');
+Query OK, 1 row affected (0.0039 sec)
+ MySQL  localhost:3306 ssl  eva_3  SQL > select generar_rfc('Pérez','Jolote', 'Juan', '1945-05-30');
++-----------------------------------------------------+
+| generar_rfc('Pérez','Jolote', 'Juan', '1945-05-30') |
++-----------------------------------------------------+
+| PéJJ19450530                                        |
++-----------------------------------------------------+
+1 row in set (0.0013 sec)
+ MySQL  localhost:3306 ssl  eva_3  SQL > select * from personas;
++----+---------+--------------+--------------+------------+-----------+
+| id | nombre  | apellido_pat | apellido_mat | fecha_nac  | clave_rfc |
++----+---------+--------------+--------------+------------+-----------+
+|  1 | Erick   | Pérez        | Lozano       | 2001-05-24 | NULL      |
+|  2 | Jesús   | Sierra       | Ruíz         | 2002-03-30 | NULL      |
+|  3 | Marco   | Polo         | Moro         | 2000-12-01 | NULL      |
+|  4 | Daniela | Martínez     | Zapata       | 2002-01-15 | NULL      |
+|  5 | Paolina | Gutierrez    | López        | 2001-07-31 | NULL      |
+|  6 | Javier  | Ramos        | Hernández    | 2002-05-30 | NULL      |
+|  7 | Yolanda | Lozano       | Aranda       | 2002-01-03 | NULL      |
+|  8 | Armando | Sosa         | Loya         | 2000-03-09 | NULL      |
+|  9 | Dilan   | García       | Hernández    | 2000-05-20 | NULL      |
+| 10 | Dan     | Luminal      | NULL         | 2002-03-30 | NULL      |
++----+---------+--------------+--------------+------------+-----------+
+10 rows in set (0.0009 sec)
+ MySQL  localhost:3306 ssl  eva_3  SQL > update personas set clave_rfc = generar_rfc(apellido_paterno, apellido_materno, nombre, fecha_nacimiento);
+ERROR: 1054 (42S22): Unknown column 'apellido_paterno' in 'field list'
+ MySQL  localhost:3306 ssl  eva_3  SQL > update personas set clave_rfc = generar_rfc(apellido_pat, apellido_mat, nombre, fecha_nac);
+Query OK, 10 rows affected (0.0053 sec)
+
+Rows matched: 10  Changed: 10  Warnings: 0
+ MySQL  localhost:3306 ssl  eva_3  SQL > select * from personas;
++----+---------+--------------+--------------+------------+--------------+
+| id | nombre  | apellido_pat | apellido_mat | fecha_nac  | clave_rfc    |
++----+---------+--------------+--------------+------------+--------------+
+|  1 | Erick   | Pérez        | Lozano       | 2001-05-24 | PéLE20010524 |
+|  2 | Jesús   | Sierra       | Ruíz         | 2002-03-30 | SiRJ20020330 |
+|  3 | Marco   | Polo         | Moro         | 2000-12-01 | PoMM20001201 |
+|  4 | Daniela | Martínez     | Zapata       | 2002-01-15 | MaZD20020115 |
+|  5 | Paolina | Gutierrez    | López        | 2001-07-31 | GuLP20010731 |
+|  6 | Javier  | Ramos        | Hernández    | 2002-05-30 | RaHJ20020530 |
+|  7 | Yolanda | Lozano       | Aranda       | 2002-01-03 | LoAY20020103 |
+|  8 | Armando | Sosa         | Loya         | 2000-03-09 | SoLA20000309 |
+|  9 | Dilan   | García       | Hernández    | 2000-05-20 | GaHD20000520 |
+| 10 | Dan     | Luminal      | NULL         | 2002-03-30 | LuXD20020330 |
++----+---------+--------------+--------------+------------+--------------+
+10 rows in set (0.0009 sec)
+ MySQL  localhost:3306 ssl  eva_3  SQL >
